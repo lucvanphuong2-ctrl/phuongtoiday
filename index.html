@@ -375,16 +375,34 @@
             }
         });
 
-        // Function to handle Image Upload/Preview
+        // LOAD SAVED IMAGES ON STARTUP
+        document.addEventListener('DOMContentLoaded', () => {
+            const images = ['hero-image', 'about-image'];
+            images.forEach(id => {
+                const saved = localStorage.getItem('saved_image_' + id);
+                if (saved) {
+                    document.getElementById(id).src = saved;
+                }
+            });
+        });
+
+        // Function to handle Image Upload/Preview and SAVE to LocalStorage
         function updateImage(event, elementId) {
             const input = event.target;
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
+                    const result = e.target.result;
                     const img = document.getElementById(elementId);
-                    img.src = e.target.result;
-                    // Also update the other image if you want them consistent, 
-                    // but here we allow independent updates for flexibility.
+                    img.src = result;
+                    
+                    // Save to localStorage so it persists on reload
+                    try {
+                        localStorage.setItem('saved_image_' + elementId, result);
+                    } catch (err) {
+                        console.error("Storage failed (likely file too big for localStorage):", err);
+                        alert("Ảnh quá lớn để lưu vào bộ nhớ trình duyệt, nhưng sẽ hiển thị cho phiên này.");
+                    }
                 }
                 reader.readAsDataURL(input.files[0]);
             }
