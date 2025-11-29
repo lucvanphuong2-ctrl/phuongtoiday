@@ -1,312 +1,298 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lục Văn Phương - Chuyên gia Ứng dụng AI</title>
-    <!-- Tải Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
-    <!-- Cấu hình Font và Tailwind --><style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f9fc; /* Nền sáng nhẹ */
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4f46e5;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #e2e8f0;
-        }
-    </style>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary-blue': '#4f46e5', /* Màu xanh tím chủ đạo */
-                        'secondary-gray': '#374151',
-                    },
-                    boxShadow: {
-                        'custom': '0 10px 30px -5px rgba(79, 70, 229, 0.2)',
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="text-gray-800">
+import React, { useState, useEffect } from 'react';
+import { Menu, X, Code, Cpu, Brain, Calendar, Mail, Github, Linkedin, Facebook, Upload, ChevronDown } from 'lucide-react';
 
-    <!-- Thanh Điều Hướng (Navbar) --><nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo/Tên --><div class="flex-shrink-0">
-                    <a href="#home" class="text-2xl font-extrabold text-primary-blue hover:text-indigo-700 transition duration-300">
-                        Lục Văn Phương <span class="text-sm font-light text-secondary-gray block sm:inline">| AI Dev | MSV 04457</span>
-                    </a>
-                </div>
-                <!-- Menu Desktop --><div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                    <a href="#gioi-thieu" class="text-secondary-gray hover:text-primary-blue px-3 py-2 rounded-md text-sm font-medium transition duration-300">Giới Thiệu</a>
-                    <a href="#chuyen-mon" class="text-secondary-gray hover:text-primary-blue px-3 py-2 rounded-md text-sm font-medium transition duration-300">Chuyên Môn</a>
-                    <a href="#du-an" class="text-secondary-gray hover:text-primary-blue px-3 py-2 rounded-md text-sm font-medium transition duration-300">Dự Án</a>
-                    <a href="#lien-he" class="text-secondary-gray hover:text-primary-blue px-3 py-2 rounded-md text-sm font-medium transition duration-300">Liên Hệ</a>
-                </div>
-                <!-- Mobile Menu Button (Hamburger) --><button id="mobile-menu-button" class="sm:hidden text-secondary-gray hover:text-primary-blue focus:outline-none p-2 rounded-md transition duration-300" aria-expanded="false">
-                    <!-- Icon SVG --><svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
+export default function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  const [avatar, setAvatar] = useState("https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=687&q=80"); // Ảnh mặc định
+
+  // Xử lý scroll spy
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'about', 'skills', 'events', 'contact'];
+      const scrollPosition = window.scrollY + 100;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
+          setActiveSection(section);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const scrollTo = (id) => {
+    setIsMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const Navigation = () => (
+    <nav className="fixed top-0 left-0 w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex-shrink-0 font-bold text-2xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-green-500 cursor-pointer" onClick={() => scrollTo('home')}>
+            LVP.<span className="text-slate-400 text-sm font-normal ml-1">AI Dev</span>
+          </div>
+          
+          {/* Desktop Menu */}
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-8">
+              {['Trang chủ', 'Giới thiệu', 'Kỹ năng', 'Sự kiện', 'Liên hệ'].map((item, index) => {
+                const id = ['home', 'about', 'skills', 'events', 'contact'][index];
+                return (
+                  <button
+                    key={item}
+                    onClick={() => scrollTo(id)}
+                    className={`${activeSection === id ? 'text-green-400' : 'text-slate-300 hover:text-white'} px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300`}
+                  >
+                    {item}
+                  </button>
+                )
+              })}
             </div>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="-mr-2 flex md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="bg-slate-800 inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 focus:outline-none"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
-        <!-- Mobile Menu (Ẩn ban đầu) --><div id="mobile-menu" class="hidden sm:hidden transition duration-300">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="#gioi-thieu" onclick="closeMobileMenu()" class="block text-secondary-gray hover:bg-indigo-50 hover:text-primary-blue px-3 py-2 rounded-md text-base font-medium transition duration-300">Giới Thiệu</a>
-                <a href="#chuyen-mon" onclick="closeMobileMenu()" class="block text-secondary-gray hover:bg-indigo-50 hover:text-primary-blue px-3 py-2 rounded-md text-base font-medium transition duration-300">Chuyên Môn</a>
-                <a href="#du-an" onclick="closeMobileMenu()" class="block text-secondary-gray hover:bg-indigo-50 hover:text-primary-blue px-3 py-2 rounded-md text-base font-medium transition duration-300">Dự Án</a>
-                <a href="#lien-he" onclick="closeMobileMenu()" class="block text-secondary-gray hover:bg-indigo-50 hover:text-primary-blue px-3 py-2 rounded-md text-base font-medium transition duration-300">Liên Hệ</a>
-            </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-slate-900 border-b border-slate-800">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+             {['Trang chủ', 'Giới thiệu', 'Kỹ năng', 'Sự kiện', 'Liên hệ'].map((item, index) => {
+                const id = ['home', 'about', 'skills', 'events', 'contact'][index];
+                return (
+                  <button
+                    key={item}
+                    onClick={() => scrollTo(id)}
+                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800"
+                  >
+                    {item}
+                  </button>
+                )
+              })}
+          </div>
         </div>
+      )}
     </nav>
+  );
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+  return (
+    <div className="bg-slate-950 text-slate-200 min-h-screen font-sans selection:bg-green-500/30">
+      <Navigation />
 
-        <!-- 1. HERO SECTION (Trang Chủ) --><section id="home" class="flex flex-col lg:flex-row items-center justify-between gap-12 mb-20 lg:mb-32">
-            <!-- Văn bản giới thiệu --><div class="lg:w-3/5">
-                <p class="text-primary-blue text-lg font-semibold mb-4 uppercase tracking-widest">Lập Trình Ứng Dụng AI <span class="text-secondary-gray font-medium">| MSV 04457</span></p>
-                <h1 class="text-5xl lg:text-7xl font-extrabold text-secondary-gray leading-tight mb-6">
-                    Lục Văn Phương: <span class="text-primary-blue block">Kiến Tạo Tương Lai Thông Minh</span>
-                </h1>
-                <p class="text-xl lg:text-2xl text-gray-600 mb-8">
-                    Chuyên gia phát triển các giải pháp Trí tuệ Nhân tạo tiên tiến, từ Thị giác Máy tính đến Phân tích Dữ liệu Lớn, nhằm tối ưu hóa hoạt động kinh doanh và mang lại giá trị đột phá.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#du-an" class="py-3 px-8 bg-primary-blue text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-105 text-center">
-                        Xem Dự Án Tiêu Biểu
-                    </a>
-                    <a href="#lien-he" class="py-3 px-8 bg-white border-2 border-primary-blue text-primary-blue font-bold text-lg rounded-xl shadow-md hover:bg-indigo-50 transition duration-300 transform hover:scale-105 text-center">
-                        Liên Hệ Hợp Tác
-                    </a>
-                </div>
+      {/* Hero Section */}
+      <section id="home" className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+          <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-green-600/20 rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-red-600/20 rounded-full blur-[100px]"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+          
+          {/* Text Content */}
+          <div className="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+            <div className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-green-400 uppercase bg-green-400/10 rounded-full border border-green-400/20">
+              Portfolio
             </div>
-            <!-- Ảnh Chân dung Lục Văn Phương --><div class="lg:w-2/5 flex justify-center">
-                <div class="w-64 h-64 sm:w-80 sm:h-80 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden border-8 border-white shadow-2xl">
-                    <img src="uploaded:image_64735f.png-6102923e-8b8c-467c-b1f0-f1b866ed6759" alt="Ảnh chân dung Lục Văn Phương" class="w-full h-full object-cover">
-                    <!-- Đã cập nhật src để sử dụng ảnh bạn vừa tải lên --></div>
-            </div>
-        </section>
-
-        <!-- 2. GIỚI THIỆU TÓM TẮT --><section id="gioi-thieu" class="py-16 border-t border-gray-200">
-            <h2 class="text-4xl font-bold text-secondary-gray mb-10 text-center">Về Lục Văn Phương</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                
-                <!-- Card 1: Kinh Nghiệm --><div class="bg-white p-8 rounded-xl shadow-custom transition duration-500 hover:shadow-xl hover:translate-y-[-5px]">
-                    <span class="text-5xl font-extrabold text-primary-blue block mb-2">5+</span>
-                    <p class="text-xl font-semibold mb-4 text-secondary-gray">Năm Kinh Nghiệm</p>
-                    <p class="text-gray-600">Phát triển và triển khai các mô hình Học sâu (Deep Learning) trong môi trường sản xuất thực tế.</p>
-                </div>
-                
-                <!-- Card 2: Chuyên môn sâu --><div class="bg-white p-8 rounded-xl shadow-custom transition duration-500 hover:shadow-xl hover:translate-y-[-5px]">
-                    <span class="text-5xl font-extrabold text-primary-blue block mb-2">CV & NLP</span>
-                    <p class="text-xl font-semibold mb-4 text-secondary-gray">Chuyên Sâu</p>
-                    <p class="text-gray-600">Thị giác Máy tính (Computer Vision) và Xử lý Ngôn ngữ Tự nhiên (NLP) là thế mạnh cốt lõi.</p>
-                </div>
-
-                <!-- Card 3: Công Nghệ --><div class="bg-white p-8 rounded-xl shadow-custom transition duration-500 hover:shadow-xl hover:translate-y-[-5px]">
-                    <span class="text-5xl font-extrabold text-primary-blue block mb-2">Python</span>
-                    <p class="text-xl font-semibold mb-4 text-secondary-gray">Ngôn Ngữ Chính</p>
-                    <p class="text-gray-600">Thành thạo Python, cùng các framework $PyTorch$ và $TensorFlow$ để xây dựng AI.</p>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- 3. CHUYÊN MÔN KỸ THUẬT --><section id="chuyen-mon" class="py-20">
-            <h2 class="text-4xl font-bold text-secondary-gray mb-12 text-center">Lĩnh Vực Chuyên Môn Cốt Lõi</h2>
+            <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight">
+              Lục Văn <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">Phương</span>
+            </h1>
+            <h2 className="text-2xl md:text-3xl font-light text-slate-300 mb-2">
+              Kỹ sư Lập trình Ứng dụng AI
+            </h2>
+            <p className="text-xl text-red-400 font-mono mb-6">MSSV: 04457</p>
+            <p className="text-slate-400 max-w-lg mx-auto md:mx-0 mb-8 leading-relaxed">
+              Chuyên nghiên cứu và phát triển các giải pháp Trí tuệ Nhân tạo, Học máy (Machine Learning) và Thị giác máy tính để giải quyết các vấn đề thực tiễn.
+            </p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Kỹ năng 1: Thị Giác Máy Tính --><div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-primary-blue hover:shadow-lg transition duration-300">
-                    <h3 class="text-2xl font-semibold mb-3 text-secondary-gray flex items-center">
-                        <span class="text-primary-blue mr-3 text-3xl">👁️</span> Thị Giác Máy Tính (CV)
-                    </h3>
-                    <ul class="list-disc pl-5 text-gray-600 space-y-2">
-                        <li>Nhận dạng & Theo dõi Đối tượng (Object Detection & Tracking)</li>
-                        <li>Phân tích Hình ảnh Y tế (Medical Image Analysis)</li>
-                        <li>Phân đoạn Ảnh (Image Segmentation)</li>
-                        <li>Xử lý ảnh công nghiệp (Industrial Image Processing)</li>
-                    </ul>
-                </div>
-
-                <!-- Kỹ năng 2: Xử Lý Ngôn Ngữ Tự Nhiên --><div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-green-500 hover:shadow-lg transition duration-300">
-                    <h3 class="text-2xl font-semibold mb-3 text-secondary-gray flex items-center">
-                        <span class="text-green-500 mr-3 text-3xl">💬</span> Xử Lý Ngôn Ngữ (NLP)
-                    </h3>
-                    <ul class="list-disc pl-5 text-gray-600 space-y-2">
-                        <li>Xây dựng Chatbot & Hệ thống Hỏi/Đáp (Q&A)</li>
-                        <li>Phân loại Văn bản & Phân tích Cảm xúc</li>
-                        <li>Mô hình Ngôn ngữ Lớn ($LLM$) và $Fine-Tuning$</li>
-                        <li>Tóm tắt Văn bản Tự động</li>
-                    </ul>
-                </div>
-
-                <!-- Kỹ năng 3: Học Máy & Học Sâu --><div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-red-500 hover:shadow-lg transition duration-300">
-                    <h3 class="text-2xl font-semibold mb-3 text-secondary-gray flex items-center">
-                        <span class="text-red-500 mr-3 text-3xl">🧠</span> Học Máy & Học Sâu
-                    </h3>
-                    <ul class="list-disc pl-5 text-gray-600 space-y-2">
-                        <li>Thiết kế Kiến trúc $CNN, RNN, Transformer$</li>
-                        <li>Lập trình Mô hình Dự đoán chuỗi thời gian (Time Series)</li>
-                        <li>Tối ưu hóa Mô hình và Giảm độ trễ (Latency)</li>
-                        <li>Triển khai $MLOps$ và đóng gói $Docker$</li>
-                    </ul>
-                </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <button onClick={() => scrollTo('contact')} className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-green-500/30 transition-all transform hover:-translate-y-1">
+                Liên hệ ngay
+              </button>
+              <button onClick={() => scrollTo('events')} className="px-8 py-3 bg-slate-800 border border-slate-700 text-white font-bold rounded-lg hover:bg-slate-700 transition-all">
+                Xem sự kiện
+              </button>
             </div>
+          </div>
 
-            <!-- Ngôn ngữ và Framework --><div class="mt-12 text-center">
-                <p class="text-xl font-bold text-secondary-gray mb-4">Ngôn Ngữ & Công Cụ Khác:</p>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <span class="bg-primary-blue text-white px-4 py-2 rounded-full text-sm font-medium">Python (T-F, Keras)</span>
-                    <span class="bg-gray-700 text-white px-4 py-2 rounded-full text-sm font-medium">PyTorch</span>
-                    <span class="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium">AWS/GCP</span>
-                    <span class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium">SQL/NoSQL</span>
-                    <span class="bg-cyan-500 text-white px-4 py-2 rounded-full text-sm font-medium">Git/Docker</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. DỰ ÁN TIÊU BIỂU (PORTFOLIO) --><section id="du-an" class="py-20 bg-white rounded-xl shadow-xl">
-            <h2 class="text-4xl font-bold text-secondary-gray mb-12 text-center">Dự Án Tiêu Biểu</h2>
-            
-            <div class="space-y-12">
+          {/* Avatar Image */}
+          <div className="md:w-1/2 flex justify-center relative">
+            <div className="relative w-72 h-72 md:w-96 md:h-96">
+                {/* Neon Rings */}
+                <div className="absolute inset-0 border-2 border-red-500/50 rounded-full animate-pulse blur-sm"></div>
+                <div className="absolute inset-2 border-2 border-green-500/50 rounded-full animate-spin-slow blur-sm"></div>
                 
-                <!-- Dự án 1: Hệ thống Giám sát Sản phẩm --><div class="p-6 md:p-8 rounded-xl bg-gray-50 border-l-4 border-primary-blue flex flex-col md:flex-row gap-6 hover:bg-gray-100 transition duration-300">
-                    <div class="md:w-3/4">
-                        <h3 class="text-3xl font-bold text-primary-blue mb-2">1. Hệ thống Kiểm tra Chất lượng Sản phẩm (QC-AI)</h3>
-                        <p class="text-gray-600 mb-4 italic">Lĩnh vực: Thị giác Máy tính & Sản xuất Thông minh</p>
-                        <p class="text-lg text-secondary-gray mb-4">
-                            Xây dựng mô hình $CNN$ và $YOLO$ để tự động phát hiện lỗi và khuyết tật trên dây chuyền sản xuất với độ chính xác trên 98.5%. Hệ thống giúp giảm thiểu lỗi thủ công và tăng tốc độ kiểm tra lên gấp 5 lần.
-                        </p>
-                        <p class="font-semibold text-sm">Công nghệ sử dụng: $PyTorch, OpenCV, Flask, Docker.$</p>
-                    </div>
-                    <!-- Ảnh/Placeholder Dự án --><div class="md:w-1/4 flex justify-center items-center">
-                        <div class="w-28 h-28 bg-primary-blue/10 rounded-lg flex items-center justify-center text-4xl text-primary-blue font-bold">
-                            🔍
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dự án 2: Chatbot hỗ trợ Khách hàng --><div class="p-6 md:p-8 rounded-xl bg-gray-50 border-l-4 border-green-500 flex flex-col md:flex-row gap-6 hover:bg-gray-100 transition duration-300">
-                    <div class="md:w-3/4">
-                        <h3 class="text-3xl font-bold text-green-600 mb-2">2. Chatbot Tương tác (Customer Support NLP)</h3>
-                        <p class="text-gray-600 mb-4 italic">Lĩnh vực: Xử lý Ngôn ngữ Tự nhiên & Dịch vụ Khách hàng</p>
-                        <p class="text-lg text-secondary-gray mb-4">
-                            Phát triển một $intent-classifier$ (phân loại ý định) dựa trên mô hình $Transformer$ để tự động trả lời 70% các câu hỏi thường gặp của khách hàng, giảm tải cho đội ngũ hỗ trợ.
-                        </p>
-                        <p class="font-semibold text-sm">Công nghệ sử dụng: $TensorFlow, BERT, Python NLTK, Firebase.$</p>
-                    </div>
-                    <!-- Ảnh/Placeholder Dự án --><div class="md:w-1/4 flex justify-center items-center">
-                        <div class="w-28 h-28 bg-green-500/10 rounded-lg flex items-center justify-center text-4xl text-green-600 font-bold">
-                            🤖
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. LIÊN HỆ --><section id="lien-he" class="py-20 border-t border-gray-200">
-            <h2 class="text-4xl font-bold text-secondary-gray mb-12 text-center">Liên Hệ Hợp Tác</h2>
-            <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-2xl border border-gray-100">
-                <p class="text-xl text-gray-600 mb-6 text-center">
-                    Bạn có dự án AI tiềm năng, cần tư vấn chuyên môn, hoặc muốn tìm hiểu thêm? Hãy gửi tin nhắn cho tôi!
-                </p>
-                
-                <form id="contact-form" class="space-y-6">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên</label>
-                        <input type="text" id="name" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue transition duration-300" placeholder="Tên của bạn">
-                    </div>
+                {/* Main Image Container */}
+                <div className="w-full h-full rounded-full overflow-hidden border-4 border-slate-800 shadow-2xl relative group">
+                    <img 
+                      src={avatar} 
+                      alt="Luc Van Phuong Avatar" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
                     
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue transition duration-300" placeholder="email@congty.com">
+                    {/* Upload Overlay */}
+                    <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
+                        <label htmlFor="avatar-upload" className="cursor-pointer flex flex-col items-center">
+                            <Upload className="text-white mb-2" size={32} />
+                            <span className="text-white text-sm font-medium">Thay đổi ảnh</span>
+                        </label>
+                        <input 
+                            id="avatar-upload" 
+                            type="file" 
+                            accept="image/*" 
+                            className="hidden" 
+                            onChange={handleImageUpload}
+                        />
                     </div>
+                </div>
 
-                    <div>
-                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
-                        <textarea id="message" name="message" rows="4" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue transition duration-300" placeholder="Mô tả ngắn gọn về nhu cầu hợp tác..."></textarea>
+                {/* Decorative Tech Elements */}
+                <div className="absolute -bottom-4 -right-4 bg-slate-900 p-3 rounded-lg border border-slate-700 shadow-xl flex items-center gap-2 animate-bounce">
+                    <Brain className="text-green-400" size={24} />
+                    <span className="text-xs font-bold text-white">AI Core <br/>Activated</span>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer text-slate-500" onClick={() => scrollTo('about')}>
+            <ChevronDown size={32} />
+        </div>
+      </section>
+
+      {/* About & Skills Section */}
+      <section id="skills" className="py-20 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Kỹ Năng & Công Nghệ</h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-red-500 to-green-500 mx-auto rounded-full"></div>
+                <p className="mt-4 text-slate-400">Bộ công cụ tôi sử dụng để xây dựng các mô hình thông minh.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                    { icon: <Brain size={40} />, title: "Deep Learning", desc: "TensorFlow, PyTorch, Keras", color: "text-orange-400" },
+                    { icon: <Code size={40} />, title: "Lập trình", desc: "Python, C++, JavaScript", color: "text-blue-400" },
+                    { icon: <Cpu size={40} />, title: "Data Processing", desc: "Pandas, NumPy, OpenCV", color: "text-green-400" },
+                    { icon: <Mail size={40} />, title: "Deployment", desc: "Docker, AWS, FastAPI", color: "text-purple-400" }
+                ].map((skill, index) => (
+                    <div key={index} className="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-green-500/50 hover:bg-slate-800/80 transition-all duration-300 group">
+                        <div className={`mb-4 ${skill.color} group-hover:scale-110 transition-transform`}>{skill.icon}</div>
+                        <h3 className="text-xl font-bold text-white mb-2">{skill.title}</h3>
+                        <p className="text-slate-400 text-sm">{skill.desc}</p>
                     </div>
+                ))}
+            </div>
+        </div>
+      </section>
 
-                    <button type="submit" class="w-full py-3 px-6 bg-primary-blue text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 transform hover:scale-[1.01]">
-                        Gửi Tin Nhắn
+      {/* Events / Timeline Section */}
+      <section id="events" className="py-20 relative">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Sự Kiện & Hoạt Động</h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-red-500 to-green-500 mx-auto rounded-full"></div>
+            </div>
+
+            <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-600 before:to-transparent">
+                {[
+                    { year: "2025", title: "Tốt nghiệp Xuất sắc", desc: "Bảo vệ đồ án tốt nghiệp chuyên ngành AI với đề tài 'Nhận diện cảm xúc thời gian thực'.", icon: "🎓" },
+                    { year: "2024", title: "Hackathon AI Winner", desc: "Giải nhất cuộc thi lập trình AI City Challenge với mô hình tối ưu hóa giao thông.", icon: "🏆" },
+                    { year: "2023", title: "Thực tập sinh AI", desc: "Tham gia phát triển module NLP cho công ty công nghệ FPT Software.", icon: "💼" },
+                    { year: "2022", title: "Gia nhập CLB AI", desc: "Bắt đầu nghiên cứu về mạng nơ-ron tích chập (CNN) và ứng dụng.", icon: "🚀" }
+                ].map((event, index) => (
+                    <div key={index} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full border border-slate-700 bg-slate-900 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xl">
+                            {event.icon}
+                        </div>
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg hover:shadow-green-500/10 transition-all">
+                            <div className="flex items-center justify-between space-x-2 mb-1">
+                                <h3 className="font-bold text-white">{event.title}</h3>
+                                <time className="font-mono text-xs text-green-400">{event.year}</time>
+                            </div>
+                            <p className="text-slate-400 text-sm">{event.desc}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-slate-900/50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Liên Hệ</h2>
+                <p className="text-slate-400">Sẵn sàng hợp tác cho các dự án AI đầy tham vọng.</p>
+            </div>
+            
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 shadow-2xl">
+                <form className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-2">Họ và tên</label>
+                            <input type="text" className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none text-white" placeholder="Tên của bạn" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-2">Email</label>
+                            <input type="email" className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none text-white" placeholder="email@example.com" />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-400 mb-2">Lời nhắn</label>
+                        <textarea rows="4" className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none text-white" placeholder="Bạn muốn thảo luận về dự án nào?"></textarea>
+                    </div>
+                    <button type="button" className="w-full py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-bold rounded-lg transition-all transform hover:scale-[1.02]">
+                        Gửi tin nhắn
                     </button>
-
-                    <p id="form-status" class="text-center mt-4 hidden text-sm font-medium"></p>
                 </form>
 
-                <div class="mt-8 text-center text-secondary-gray">
-                    <p class="font-bold">Hoặc kết nối trực tiếp:</p>
-                    <p class="mt-2 text-lg">Email: <a href="mailto:phuonglvpk04457@gmail.com" class="text-primary-blue hover:underline">phuonglvpk04457@gmail.com</a></p>
-                    <p class="mt-1 text-lg">LinkedIn: <a href="https://linkedin.com/in/lucvanphuong-ai" target="_blank" class="text-primary-blue hover:underline">/in/lucvanphuong-ai</a></p>
+                <div className="mt-8 flex justify-center space-x-8 pt-8 border-t border-slate-700">
+                    <a href="#" className="text-slate-400 hover:text-white transition-colors"><Github size={24} /></a>
+                    <a href="#" className="text-slate-400 hover:text-blue-500 transition-colors"><Linkedin size={24} /></a>
+                    <a href="#" className="text-slate-400 hover:text-blue-600 transition-colors"><Facebook size={24} /></a>
                 </div>
-
             </div>
-        </section>
-
-    </main>
-
-    <!-- Footer --><footer class="bg-secondary-gray text-white py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>&copy; 2024 Lục Văn Phương | Chuyên gia Lập trình Ứng dụng AI.</p>
-            <p class="text-sm mt-2">Được thiết kế để truyền tải tầm nhìn và năng lực cốt lõi trong lĩnh vực Trí tuệ Nhân tạo.</p>
         </div>
-    </footer>
+      </section>
 
-    <!-- JavaScript cho tương tác --><script>
-        // Xử lý Menu Mobile
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-            this.setAttribute('aria-expanded', menu.classList.contains('hidden') ? 'false' : 'true');
-        });
-
-        function closeMobileMenu() {
-            document.getElementById('mobile-menu').classList.add('hidden');
-            document.getElementById('mobile-menu-button').setAttribute('aria-expanded', 'false');
-        }
-
-        // Xử lý Form Liên hệ (Chỉ là giả lập)
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const statusMessage = document.getElementById('form-status');
-            
-            statusMessage.classList.remove('hidden', 'text-red-500', 'text-green-500');
-            statusMessage.classList.add('text-primary-blue', 'animate-pulse');
-            statusMessage.textContent = 'Đang gửi tin nhắn...';
-
-            // Mô phỏng độ trễ của API call
-            setTimeout(() => {
-                statusMessage.classList.remove('animate-pulse', 'text-primary-blue');
-                statusMessage.classList.add('text-green-500');
-                statusMessage.textContent = 'Cảm ơn bạn! Tin nhắn đã được gửi thành công. Lục Văn Phương sẽ phản hồi sớm nhất.';
-                
-                // Reset form sau khi gửi
-                document.getElementById('contact-form').reset();
-            }, 1500); // 1.5 giây
-        });
-
-        // Smooth Scrolling (Làm cho việc điều hướng mượt mà hơn)
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+      {/* Footer */}
+      <footer className="bg-slate-950 py-8 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+            <p className="text-slate-500 text-sm">
+                © 2025 Lục Văn Phương (MSSV 04457). All rights reserved. <br/>
+                <span className="text-xs mt-1 block">Designed by AI Expert System</span>
+            </p>
+        </div>
+      </footer>
+    </div>
+  );
+}
