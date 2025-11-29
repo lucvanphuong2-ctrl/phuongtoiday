@@ -136,19 +136,30 @@
                     </div>
                 </div>
 
-                <!-- Image Content -->
+                <!-- Image Content (Updated with Upload Feature) -->
                 <div class="relative group" data-aos="fade-left" data-aos-duration="1200">
                     <!-- Decorative border frame -->
                     <div class="absolute -inset-1 bg-gradient-to-r from-neonRed to-neonGreen rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative rounded-2xl overflow-hidden border-2 border-gray-800 shadow-2xl">
-                        <!-- User Image -->
-                        <img src="./ảnh AI.jpg" 
+                    <div class="relative rounded-2xl overflow-hidden border-2 border-gray-800 shadow-2xl group-hover:shadow-neonRed/50 transition-all">
+                        
+                        <!-- Main Image with ID -->
+                        <img id="hero-image" src="./ảnh AI.jpg" 
                              alt="Lục Văn Phương" 
                              class="w-full h-auto object-cover transform transition duration-500 group-hover:scale-105"
-                             onerror="this.src='https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000'; this.alt='Ảnh mặc định'; console.log('Không tìm thấy ảnh của bạn, đang dùng ảnh mẫu')"
+                             onerror="this.src='https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000'; this.alt='Ảnh mặc định'; console.log('Sử dụng ảnh mẫu dự phòng')"
                         >
-                        <!-- Overlay gradient for text readability if needed -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-60"></div>
+                        
+                        <!-- Upload Overlay Button -->
+                        <label for="upload-hero" class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer z-10 backdrop-blur-sm">
+                            <i class="fas fa-camera text-4xl text-neonRed mb-2 animate-bounce"></i>
+                            <span class="text-white font-bold text-sm tracking-wider uppercase border border-neonRed px-4 py-1 rounded-full hover:bg-neonRed hover:text-black transition-colors">Đổi ảnh</span>
+                            <p class="text-gray-300 text-xs mt-2 text-center px-4">Click để chọn ảnh từ máy</p>
+                        </label>
+                        <!-- Hidden File Input -->
+                        <input type="file" id="upload-hero" class="hidden" accept="image/*" onchange="updateImage(event, 'hero-image')">
+
+                        <!-- Overlay gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-60 pointer-events-none"></div>
                     </div>
                     
                     <!-- Floating Badge -->
@@ -165,16 +176,27 @@
     <section id="about" class="py-20 bg-gray-800/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <!-- About Image (New) -->
+                <!-- About Image (Updated with Upload Feature) -->
                 <div class="relative group" data-aos="fade-right">
                     <div class="absolute -inset-1 bg-gradient-to-r from-neonPurple to-neonGreen rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative rounded-2xl overflow-hidden border-2 border-gray-800 shadow-2xl aspect-[4/5]">
-                        <img src="./ảnh AI.jpg" 
+                    <div class="relative rounded-2xl overflow-hidden border-2 border-gray-800 shadow-2xl aspect-[4/5] group-hover:shadow-neonPurple/50 transition-all">
+                        
+                        <!-- About Image with ID -->
+                        <img id="about-image" src="./ảnh AI.jpg" 
                              alt="Về Lục Văn Phương" 
                              class="w-full h-full object-cover transform transition duration-500 group-hover:scale-105"
                              onerror="this.src='https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80'; this.alt='Ảnh mặc định'"
                         >
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent"></div>
+
+                        <!-- Upload Overlay Button -->
+                        <label for="upload-about" class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer z-10 backdrop-blur-sm">
+                            <i class="fas fa-image text-4xl text-neonPurple mb-2 animate-bounce"></i>
+                            <span class="text-white font-bold text-sm tracking-wider uppercase border border-neonPurple px-4 py-1 rounded-full hover:bg-neonPurple hover:text-black transition-colors">Đổi ảnh</span>
+                        </label>
+                        <!-- Hidden File Input -->
+                        <input type="file" id="upload-about" class="hidden" accept="image/*" onchange="updateImage(event, 'about-image')">
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent pointer-events-none"></div>
                     </div>
                 </div>
 
@@ -188,7 +210,7 @@
                         </p>
                     </div>
 
-                    <!-- Skills Grid (Adjusted for 2 columns layout) -->
+                    <!-- Skills Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
                         <!-- Skill Card: AI Programming -->
@@ -352,6 +374,21 @@
                 nav.style.background = 'rgba(30, 41, 59, 0.7)';
             }
         });
+
+        // Function to handle Image Upload/Preview
+        function updateImage(event, elementId) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(elementId);
+                    img.src = e.target.result;
+                    // Also update the other image if you want them consistent, 
+                    // but here we allow independent updates for flexibility.
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 </body>
 </html>
