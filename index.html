@@ -28,11 +28,13 @@
                         aiBlue: '#3b82f6',
                         darkBg: '#050a14',
                         cardBg: '#0f172a',
-                        fptOrange: '#f36f21', // Màu cam FPT
+                        fptOrange: '#f36f21',
+                        terminalBg: '#1e1e1e',
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'scan': 'scan 4s linear infinite',
+                        'blink': 'blink 1s infinite',
                     },
                     keyframes: {
                         float: {
@@ -42,6 +44,10 @@
                         scan: {
                             '0%': { transform: 'translateY(-100%)' },
                             '100%': { transform: 'translateY(100%)' },
+                        },
+                        blink: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0' },
                         }
                     }
                 }
@@ -79,10 +85,11 @@
         .cursor {
             display: inline-block;
             width: 8px;
+            height: 20px;
             background-color: #00f3ff;
+            vertical-align: middle;
             animation: blink 1s infinite;
         }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* Canvas Background */
         #neuro-canvas {
@@ -93,6 +100,10 @@
             height: 100%;
             z-index: 0;
         }
+
+        /* Terminal Scrollbar */
+        .terminal-scroll::-webkit-scrollbar { width: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #555; }
     </style>
 </head>
 <body class="bg-darkBg text-white font-sans overflow-x-hidden selection:bg-aiCyan selection:text-black">
@@ -102,32 +113,31 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <div class="flex-shrink-0 cursor-pointer flex items-center gap-3" onclick="window.scrollTo(0,0)">
-                    <!-- Avatar on Navbar -->
                     <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-aiCyan shadow-[0_0_10px_rgba(0,243,255,0.5)]">
                         <img src="https://i.postimg.cc/QCGCgwzD/anh-AI.jpg" alt="LVP Avatar" class="w-full h-full object-cover" referrerpolicy="no-referrer">
                     </div>
                     <span class="text-xl font-bold font-mono tracking-tighter">LVP<span class="text-aiCyan">.AI</span></span>
                 </div>
                 
-                <div class="hidden lg:block">
+                <div class="hidden xl:block">
                     <div class="ml-10 flex items-baseline space-x-1">
-                        <a href="#home" class="hover:bg-white/5 px-4 py-2 rounded transition-all text-sm font-medium">Trang Chủ</a>
-                        <a href="#expertise" class="hover:bg-white/5 px-4 py-2 rounded transition-all text-sm font-medium">Chuyên Môn</a>
-                        <a href="#stack" class="hover:bg-white/5 px-4 py-2 rounded transition-all text-sm font-medium">Tech Stack</a>
-                        <a href="#projects" class="hover:bg-white/5 px-4 py-2 rounded transition-all text-sm font-medium">Dự Án</a>
-                        <a href="#timeline" class="hover:bg-white/5 px-4 py-2 rounded transition-all text-sm font-medium">Lộ Trình</a>
-                        <a href="#research" class="hover:bg-white/5 px-4 py-2 rounded transition-all text-sm font-medium">Nghiên Cứu</a>
+                        <a href="#home" class="hover:bg-white/5 px-3 py-2 rounded transition-all text-sm font-medium">Trang Chủ</a>
+                        <a href="#expertise" class="hover:bg-white/5 px-3 py-2 rounded transition-all text-sm font-medium">Chuyên Môn</a>
+                        <a href="#stack" class="hover:bg-white/5 px-3 py-2 rounded transition-all text-sm font-medium">Tech Stack</a>
+                        <a href="#projects" class="hover:bg-white/5 px-3 py-2 rounded transition-all text-sm font-medium">Dự Án</a>
+                        <a href="#simulation" class="hover:bg-white/5 px-3 py-2 rounded transition-all text-sm font-medium text-aiCyan">Simulation</a>
+                        <a href="#timeline" class="hover:bg-white/5 px-3 py-2 rounded transition-all text-sm font-medium">Lộ Trình</a>
                     </div>
                 </div>
 
-                <div class="hidden lg:block">
+                <div class="hidden md:block">
                     <a href="#contact" class="group relative px-6 py-2 bg-transparent overflow-hidden rounded-full border border-aiCyan text-aiCyan font-bold text-sm hover:text-black transition-all duration-300">
                         <span class="absolute w-0 h-full bg-aiCyan left-0 top-0 transition-all duration-300 group-hover:w-full"></span>
                         <span class="relative z-10">Liên Hệ</span>
                     </a>
                 </div>
 
-                <div class="-mr-2 flex lg:hidden">
+                <div class="-mr-2 flex xl:hidden">
                     <button id="mobile-menu-btn" type="button" class="text-gray-400 hover:text-white p-2">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
@@ -135,12 +145,12 @@
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div class="lg:hidden hidden bg-darkBg border-t border-gray-800" id="mobile-menu">
+        <div class="xl:hidden hidden bg-darkBg border-t border-gray-800" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="#home" class="block px-3 py-2 text-base font-medium hover:text-aiCyan">Trang Chủ</a>
                 <a href="#expertise" class="block px-3 py-2 text-base font-medium hover:text-aiCyan">Chuyên Môn</a>
                 <a href="#projects" class="block px-3 py-2 text-base font-medium hover:text-aiCyan">Dự Án</a>
-                <a href="#timeline" class="block px-3 py-2 text-base font-medium hover:text-aiCyan">Lộ Trình</a>
+                <a href="#simulation" class="block px-3 py-2 text-base font-medium hover:text-aiCyan">Simulation</a>
                 <a href="#contact" class="block px-3 py-2 text-base font-medium text-aiCyan">Liên Hệ</a>
             </div>
         </div>
@@ -148,24 +158,22 @@
 
     <!-- HERO SECTION -->
     <section id="home" class="min-h-screen flex items-center relative pt-20 overflow-hidden">
-        <!-- Neural Network Canvas Background -->
         <canvas id="neuro-canvas"></canvas>
         
-        <!-- Gradient Blobs -->
         <div class="absolute top-1/4 -right-20 w-96 h-96 bg-aiCyan/10 blur-[150px] rounded-full pointer-events-none"></div>
         <div class="absolute bottom-0 -left-20 w-80 h-80 bg-aiPurple/10 blur-[150px] rounded-full pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 
-                <!-- Left Content (7 cols) -->
+                <!-- Left Content -->
                 <div class="lg:col-span-7" data-aos="fade-right" data-aos-duration="1000">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded border border-aiCyan/30 bg-aiCyan/5 text-aiCyan text-xs font-mono mb-6 backdrop-blur-sm">
                         <span class="relative flex h-2 w-2">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-aiCyan opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-aiCyan"></span>
                         </span>
-                        SYSTEM ONLINE: V2.5.0
+                        SYSTEM ONLINE: V3.0.0
                     </div>
                     
                     <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight">
@@ -174,17 +182,17 @@
                     </h1>
                     
                     <div class="text-xl md:text-2xl font-mono text-gray-400 mb-6 h-8 flex items-center">
-                        > I engineer <span class="text-white ml-2" id="typewriter"></span><span class="cursor ml-1">&nbsp;</span>
+                        > I engineer <span class="text-white ml-2" id="typewriter"></span><span class="cursor ml-1"></span>
                     </div>
 
                     <!-- SPECIAL CREDENTIAL BADGE -->
-                    <div class="mb-8 inline-block group">
-                        <div class="glass px-5 py-3 rounded-xl border border-aiRed/30 flex items-center gap-3 transition-all hover:bg-aiRed/10 hover:border-aiRed/50">
-                            <div class="w-10 h-10 rounded-full bg-aiRed/20 flex items-center justify-center text-aiRed">
-                                <i class="fas fa-user-graduate text-xl"></i>
+                    <div class="mb-8 inline-block group cursor-default">
+                        <div class="glass px-5 py-3 rounded-xl border border-aiRed/30 flex items-center gap-3 transition-all hover:bg-aiRed/10 hover:border-aiRed/50 hover:scale-105">
+                            <div class="w-10 h-10 rounded-full bg-aiRed/20 flex items-center justify-center text-aiRed shadow-lg shadow-aiRed/20">
+                                <i class="fas fa-crown text-xl"></i>
                             </div>
                             <div class="text-left">
-                                <p class="text-xs text-gray-400 uppercase tracking-wider font-bold">Mentor</p>
+                                <p class="text-xs text-gray-400 uppercase tracking-wider font-bold">Mentorship Program</p>
                                 <p class="text-sm md:text-base text-gray-200">Đệ tử chân truyền của thầy <span class="text-aiRed font-bold group-hover:text-white transition-colors">Nguyễn Ngọc Thạch</span></p>
                             </div>
                         </div>
@@ -193,7 +201,7 @@
                     <p class="text-gray-400 text-lg mb-8 max-w-xl leading-relaxed border-l-2 border-aiPurple pl-6 bg-gradient-to-r from-aiPurple/5 to-transparent py-2">
                         Chào, tôi là <strong>Lục Văn Phương</strong> (MSSV: 04457). <br>
                         Sinh viên ưu tú tại <strong class="text-fptOrange">FPT Polytechnic</strong>. <br>
-                        Một kỹ sư AI đầy tham vọng, chuyên biến dữ liệu thô thành các mô hình <strong>Deep Learning</strong> có khả năng "nhìn" (Computer Vision) và "hiểu" (NLP).
+                        Chuyên sâu về các kiến trúc <strong>Deep Learning</strong> hiện đại, giải quyết các bài toán về Thị giác máy tính và Xử lý ngôn ngữ tự nhiên.
                     </p>
 
                     <div class="flex flex-wrap gap-4">
@@ -206,12 +214,10 @@
                     </div>
                 </div>
 
-                <!-- Right Content (5 cols) -->
+                <!-- Right Content -->
                 <div class="lg:col-span-5 relative" data-aos="fade-left" data-aos-duration="1200">
-                    <!-- Image Card -->
                     <div class="relative z-10">
                         <div class="relative rounded-2xl overflow-hidden border border-gray-700 bg-gray-900 shadow-2xl group">
-                            <!-- Scanning Effect -->
                             <div class="absolute inset-0 z-20 pointer-events-none bg-gradient-to-b from-transparent via-aiCyan/10 to-transparent h-[20%] w-full animate-scan opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             
                             <img src="https://i.postimg.cc/QCGCgwzD/anh-AI.jpg" 
@@ -239,8 +245,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Decorative Elements -->
                     <div class="absolute -top-10 -right-10 text-6xl text-gray-800/50 z-0">
                         <i class="fas fa-code"></i>
                     </div>
@@ -249,7 +253,7 @@
         </div>
     </section>
 
-    <!-- CORE EXPERTISE SECTION -->
+    <!-- CORE EXPERTISE -->
     <section id="expertise" class="py-24 bg-cardBg relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
@@ -258,7 +262,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Item 1 -->
+                <!-- Deep Learning -->
                 <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                         <i class="fas fa-brain text-6xl text-white"></i>
@@ -268,16 +272,15 @@
                     </div>
                     <h3 class="text-xl font-bold mb-3 group-hover:text-aiPurple transition-colors">Deep Learning</h3>
                     <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                        Thiết kế và tối ưu hóa các kiến trúc mạng nơ-ron sâu (CNNs, RNNs, Transformers) để giải quyết các bài toán phức tạp.
+                        Thiết kế và tối ưu hóa các kiến trúc mạng nơ-ron sâu (CNNs, RNNs, Transformers).
                     </p>
                     <ul class="text-xs font-mono text-gray-500 space-y-1">
                         <li>> TensorFlow / Keras</li>
                         <li>> PyTorch Lightning</li>
-                        <li>> Model Fine-tuning</li>
                     </ul>
                 </div>
 
-                <!-- Item 2 -->
+                <!-- Computer Vision -->
                 <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                         <i class="fas fa-eye text-6xl text-white"></i>
@@ -287,16 +290,15 @@
                     </div>
                     <h3 class="text-xl font-bold mb-3 group-hover:text-aiCyan transition-colors">Computer Vision</h3>
                     <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                        Xử lý ảnh số, phát hiện vật thể (Object Detection), nhận diện khuôn mặt và phân đoạn ảnh y tế.
+                        Xử lý ảnh số, phát hiện vật thể (YOLO), nhận diện khuôn mặt và phân đoạn ảnh y tế.
                     </p>
                     <ul class="text-xs font-mono text-gray-500 space-y-1">
                         <li>> OpenCV / Pillow</li>
-                        <li>> YOLO Series</li>
                         <li>> Semantic Segmentation</li>
                     </ul>
                 </div>
 
-                <!-- Item 3 -->
+                <!-- Data Science -->
                 <div class="glass-card p-8 rounded-2xl relative overflow-hidden group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                         <i class="fas fa-database text-6xl text-white"></i>
@@ -306,65 +308,139 @@
                     </div>
                     <h3 class="text-xl font-bold mb-3 group-hover:text-aiBlue transition-colors">Data Science</h3>
                     <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                        Khai phá dữ liệu (Data Mining), làm sạch dữ liệu lớn và trực quan hóa để tìm ra các insight giá trị.
+                        Khai phá dữ liệu (Data Mining), làm sạch dữ liệu lớn và trực quan hóa tìm insight.
                     </p>
                     <ul class="text-xs font-mono text-gray-500 space-y-1">
                         <li>> Pandas / NumPy</li>
                         <li>> Matplotlib / Seaborn</li>
-                        <li>> SQL / NoSQL</li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- TECH STACK ECOSYSTEM (EXPANSION) -->
-    <section id="stack" class="py-20 bg-darkBg border-y border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 class="text-2xl font-bold mb-10 text-center font-mono">&lt;TECH_STACK_ECOSYSTEM /&gt;</h3>
+    <!-- AI TERMINAL SIMULATION (NEW SECTION) -->
+    <section id="simulation" class="py-20 bg-darkBg border-y border-white/5 relative">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-2xl font-bold mb-8 text-center font-mono flex items-center justify-center gap-3">
+                <i class="fas fa-terminal text-aiCyan"></i> &lt;LIVE_MODEL_TRAINING /&gt;
+            </h3>
             
+            <div class="w-full bg-terminalBg rounded-lg shadow-2xl border border-gray-700 overflow-hidden font-mono text-sm" data-aos="zoom-in">
+                <!-- Terminal Header -->
+                <div class="bg-[#2d2d2d] px-4 py-2 flex items-center justify-between border-b border-gray-700">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="text-gray-400 text-xs">lucvanphuong@ai-station:~/projects/face-id</div>
+                    <div class="text-gray-500 text-xs">Python 3.10</div>
+                </div>
+                
+                <!-- Terminal Body -->
+                <div class="p-6 text-green-400 h-80 overflow-y-auto terminal-scroll" id="terminal-content">
+                    <p class="text-white">$ python train_model.py --epochs 50 --batch_size 32</p>
+                    <p class="text-gray-400 mt-2">Initializing Neural Network...</p>
+                    <p class="text-gray-400">Loading Dataset: FPT_Student_Faces (10,000 images)</p>
+                    <p class="text-blue-400">Device: GPU (NVIDIA CUDA)</p>
+                    <div id="training-logs" class="mt-4">
+                        <!-- JS will inject text here -->
+                    </div>
+                    <p id="cursor-line" class="mt-2"><span class="cursor"></span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TECH STACK -->
+    <section id="stack" class="py-20 bg-darkBg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <!-- Languages -->
                 <div>
                     <h4 class="text-aiRed font-bold mb-4 uppercase text-sm tracking-wider">Languages</h4>
                     <div class="space-y-3">
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">Python 🐍</div>
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">C++ ⚙️</div>
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">SQL 🗄️</div>
+                        <div class="glass p-3 rounded hover:bg-white/5 transition">Python 🐍</div>
+                        <div class="glass p-3 rounded hover:bg-white/5 transition">C++ ⚙️</div>
                     </div>
                 </div>
-                <!-- Frameworks -->
                 <div>
                     <h4 class="text-aiCyan font-bold mb-4 uppercase text-sm tracking-wider">AI Frameworks</h4>
                     <div class="space-y-3">
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">TensorFlow 🔥</div>
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">PyTorch 🔥</div>
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">Scikit-learn 🤖</div>
+                        <div class="glass p-3 rounded hover:bg-white/5 transition">TensorFlow 🔥</div>
+                        <div class="glass p-3 rounded hover:bg-white/5 transition">PyTorch 🔥</div>
                     </div>
                 </div>
-                <!-- MLOps & Tools -->
                 <div>
-                    <h4 class="text-aiPurple font-bold mb-4 uppercase text-sm tracking-wider">MLOps & Tools</h4>
+                    <h4 class="text-aiPurple font-bold mb-4 uppercase text-sm tracking-wider">Tools</h4>
                     <div class="space-y-3">
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">Docker 🐳</div>
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">Git / GitHub 🐙</div>
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">Jupyter Lab 📓</div>
+                        <div class="glass p-3 rounded hover:bg-white/5 transition">Docker 🐳</div>
+                        <div class="glass p-3 rounded hover:bg-white/5 transition">Jupyter 📓</div>
                     </div>
                 </div>
-                <!-- Deployment -->
                 <div>
                     <h4 class="text-aiBlue font-bold mb-4 uppercase text-sm tracking-wider">Deployment</h4>
                     <div class="space-y-3">
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">Flask / FastAPI ⚡</div>
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">Heroku ☁️</div>
-                        <div class="glass p-3 rounded hover:bg-white/5 transition cursor-default">Streamlit 📊</div>
+                        <div class="glass p-3 rounded hover:bg-white/5 transition">Flask / FastAPI ⚡</div>
+                        <div class="glass p-3 rounded hover:bg-white/5 transition">Streamlit 📊</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PROJECTS SECTION (ENHANCED) -->
+    <!-- CERTIFICATIONS (NEW) -->
+    <section id="certifications" class="py-20 bg-cardBg border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-10 text-center">Chứng Chỉ <span class="text-aiCyan">Chuyên Nghiệp</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Cert 1 -->
+                <div class="glass-card p-6 rounded-xl flex items-center gap-4 hover:bg-white/5 cursor-default">
+                    <i class="fab fa-google text-4xl text-gray-300"></i>
+                    <div>
+                        <h4 class="font-bold text-white">TensorFlow Developer</h4>
+                        <p class="text-xs text-gray-400">Google Certificate</p>
+                    </div>
+                </div>
+                <!-- Cert 2 -->
+                <div class="glass-card p-6 rounded-xl flex items-center gap-4 hover:bg-white/5 cursor-default">
+                    <i class="fas fa-brain text-4xl text-aiPurple"></i>
+                    <div>
+                        <h4 class="font-bold text-white">Deep Learning Specialization</h4>
+                        <p class="text-xs text-gray-400">Coursera (Andrew Ng)</p>
+                    </div>
+                </div>
+                <!-- Cert 3 -->
+                <div class="glass-card p-6 rounded-xl flex items-center gap-4 hover:bg-white/5 cursor-default">
+                    <i class="fas fa-database text-4xl text-aiBlue"></i>
+                    <div>
+                        <h4 class="font-bold text-white">Data Science Professional</h4>
+                        <p class="text-xs text-gray-400">IBM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIAL (NEW) -->
+    <section id="testimonial" class="py-20 bg-darkBg relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-aiCyan to-transparent"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <i class="fas fa-quote-left text-4xl text-gray-600 mb-6"></i>
+            <p class="text-xl md:text-2xl text-gray-300 italic leading-relaxed mb-8">
+                "Lục Văn Phương là một trong những sinh viên có tư duy thuật toán sắc bén nhất mà tôi từng hướng dẫn. Sự kiên trì và khả năng tự nghiên cứu sâu về Deep Learning của em ấy là tố chất của một chuyên gia AI hàng đầu trong tương lai."
+            </p>
+            <div class="flex items-center justify-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-xl font-bold text-white">NT</div>
+                <div class="text-left">
+                    <h4 class="font-bold text-white">Thầy Nguyễn Ngọc Thạch</h4>
+                    <p class="text-sm text-fptOrange">Giảng viên hướng dẫn - FPT Polytechnic</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
     <section id="projects" class="py-24 bg-cardBg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-end mb-12">
@@ -378,7 +454,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <!-- Project 1: Big Card -->
+                <!-- Project 1 -->
                 <div class="group relative rounded-2xl overflow-hidden border border-gray-800 bg-darkBg" data-aos="fade-up">
                     <div class="aspect-video overflow-hidden relative">
                         <div class="absolute inset-0 bg-gradient-to-t from-darkBg to-transparent z-10"></div>
@@ -390,15 +466,14 @@
                             <span class="px-2 py-1 bg-gray-800 text-gray-300 text-xs font-mono rounded">Python</span>
                         </div>
                         <h3 class="text-2xl font-bold mb-2 group-hover:text-aiRed transition-colors">Hệ Thống Điểm Danh Khuôn Mặt (FaceID)</h3>
-                        <p class="text-gray-400 mb-6 line-clamp-2">Sử dụng thuật toán Haar Cascade và LBPH để nhận diện sinh viên theo thời gian thực từ camera giám sát, tự động lưu vào database.</p>
+                        <p class="text-gray-400 mb-6 line-clamp-2">Sử dụng thuật toán Haar Cascade và LBPH để nhận diện sinh viên theo thời gian thực.</p>
                         <div class="flex gap-4">
                             <a href="#" class="text-white hover:text-aiRed font-mono text-sm flex items-center gap-2"><i class="fab fa-github"></i> Source Code</a>
-                            <a href="#" class="text-white hover:text-aiRed font-mono text-sm flex items-center gap-2"><i class="fas fa-play-circle"></i> Live Demo</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Project 2: Big Card -->
+                <!-- Project 2 -->
                 <div class="group relative rounded-2xl overflow-hidden border border-gray-800 bg-darkBg" data-aos="fade-up" data-aos-delay="100">
                     <div class="aspect-video overflow-hidden relative">
                         <div class="absolute inset-0 bg-gradient-to-t from-darkBg to-transparent z-10"></div>
@@ -410,10 +485,9 @@
                             <span class="px-2 py-1 bg-gray-800 text-gray-300 text-xs font-mono rounded">TensorFlow</span>
                         </div>
                         <h3 class="text-2xl font-bold mb-2 group-hover:text-aiCyan transition-colors">Chatbot Tư Vấn Tuyển Sinh AI</h3>
-                        <p class="text-gray-400 mb-6 line-clamp-2">Xây dựng mô hình LSTM để hiểu ý định người dùng (Intent Classification) và trả lời tự động các câu hỏi về quy chế, điểm chuẩn.</p>
+                        <p class="text-gray-400 mb-6 line-clamp-2">Xây dựng mô hình LSTM để hiểu ý định người dùng (Intent Classification).</p>
                         <div class="flex gap-4">
                             <a href="#" class="text-white hover:text-aiCyan font-mono text-sm flex items-center gap-2"><i class="fab fa-github"></i> Source Code</a>
-                            <a href="#" class="text-white hover:text-aiCyan font-mono text-sm flex items-center gap-2"><i class="fas fa-play-circle"></i> Live Demo</a>
                         </div>
                     </div>
                 </div>
@@ -421,7 +495,7 @@
         </div>
     </section>
 
-    <!-- TIMELINE SECTION (EXPANSION) -->
+    <!-- TIMELINE SECTION -->
     <section id="timeline" class="py-24 bg-darkBg relative">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold mb-12 text-center">Lộ Trình <span class="text-aiPurple">Phát Triển</span></h2>
@@ -441,7 +515,7 @@
                                 <h3 class="font-bold text-lg text-white mt-0.5">Nghiên cứu Deep Learning</h3>
                              </div>
                         </div>
-                        <p class="text-gray-400 text-sm mt-2">Tập trung chuyên sâu vào các mô hình Transformer và ứng dụng trong xử lý ngôn ngữ tự nhiên.</p>
+                        <p class="text-gray-400 text-sm mt-2">Tập trung chuyên sâu vào các mô hình Transformer và NLP.</p>
                     </div>
                 </div>
 
@@ -450,7 +524,7 @@
                     <div class="order-1 md:w-5/12 px-6 py-4 glass-card rounded-xl ml-6 md:ml-0 md:text-right">
                         <span class="text-aiPurple font-mono text-xs font-bold">2023 - 2024</span>
                         <h3 class="font-bold text-lg text-white mt-1">Dự án Thực tế đầu tay</h3>
-                        <p class="text-gray-400 text-sm mt-2">Hoàn thành dự án nhận diện biển số xe và phân loại rác thải thông minh.</p>
+                        <p class="text-gray-400 text-sm mt-2">Hoàn thành dự án nhận diện biển số xe.</p>
                     </div>
                     <div class="z-20 flex items-center order-1 bg-aiPurple shadow-xl w-4 h-4 rounded-full absolute left-[-9px] md:left-1/2 md:translate-x-[-50%] group-hover:scale-150 transition-transform"></div>
                     <div class="order-1 md:w-5/12"></div>
@@ -463,42 +537,20 @@
                     <div class="order-1 md:w-5/12 px-6 py-4 glass-card rounded-xl ml-6 md:ml-0">
                         <span class="text-white font-mono text-xs font-bold">2021 - 2023</span>
                         <h3 class="font-bold text-lg text-white mt-1">Sinh viên FPT Polytechnic</h3>
-                        <p class="text-gray-400 text-sm mt-2">Bắt đầu hành trình tại Đại học. Nắm vững cấu trúc dữ liệu, giải thuật và OOP.</p>
+                        <p class="text-gray-400 text-sm mt-2">Bắt đầu hành trình tại Đại học.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- RESEARCH & ARTICLES (NEW EXPANSION) -->
-    <section id="research" class="py-20 bg-cardBg border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold mb-8">Nghiên Cứu & <span class="text-aiBlue">Bài Viết</span> <span class="text-xs font-normal text-gray-500 bg-gray-800 px-2 py-1 rounded ml-2">Sắp ra mắt</span></h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 opacity-70 hover:opacity-100 transition-opacity">
-                <article class="glass p-6 rounded-xl border-l-4 border-gray-600 hover:border-aiBlue transition-colors cursor-pointer">
-                    <div class="text-xs font-mono text-aiBlue mb-2">PAPER REVIEW</div>
-                    <h3 class="text-lg font-bold mb-2">Tối ưu hóa CNN trên thiết bị Edge (IoT)</h3>
-                    <p class="text-gray-400 text-sm">Nghiên cứu về các kỹ thuật Quantization và Pruning để chạy mô hình AI nhẹ trên Raspberry Pi.</p>
-                </article>
-
-                <article class="glass p-6 rounded-xl border-l-4 border-gray-600 hover:border-aiBlue transition-colors cursor-pointer">
-                    <div class="text-xs font-mono text-aiBlue mb-2">TUTORIAL</div>
-                    <h3 class="text-lg font-bold mb-2">Xây dựng RAG (Retrieval-Augmented Generation) cơ bản</h3>
-                    <p class="text-gray-400 text-sm">Hướng dẫn kết hợp LLM với dữ liệu riêng tư để tạo Chatbot thông minh hơn.</p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTACT SECTION -->
+    <!-- CONTACT SECTION & FOOTER -->
     <section id="contact" class="py-24 bg-darkBg relative overflow-hidden">
-        <!-- Background Glow -->
         <div class="absolute inset-0 bg-gradient-to-t from-aiCyan/5 to-transparent"></div>
 
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h2 class="text-4xl font-bold mb-6">Let's Build <span class="text-aiCyan">Intelligence</span> Together</h2>
-            <p class="text-gray-400 mb-10 text-lg">Tôi luôn tìm kiếm cơ hội hợp tác trong các dự án AI thách thức. <br>Đừng ngần ngại kết nối!</p>
+            <p class="text-gray-400 mb-10 text-lg">Tôi luôn tìm kiếm cơ hội hợp tác trong các dự án AI thách thức.</p>
             
             <div class="flex flex-col md:flex-row justify-center gap-6 mb-12">
                 <a href="mailto:contact@lucvanphuong.com" class="px-8 py-4 bg-aiCyan text-black font-bold rounded-lg hover:shadow-[0_0_30px_rgba(0,243,255,0.4)] transition-shadow">
@@ -507,12 +559,16 @@
                 <a href="#" class="px-8 py-4 glass text-white font-bold rounded-lg hover:bg-white/10 transition-colors">
                     <i class="fab fa-linkedin mr-2"></i> LinkedIn
                 </a>
+                <!-- Kaggle Link -->
+                <a href="#" class="px-8 py-4 glass text-white font-bold rounded-lg hover:bg-white/10 transition-colors">
+                    <i class="fab fa-kaggle mr-2 text-blue-400"></i> Kaggle
+                </a>
             </div>
 
             <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
                 <p>&copy; 2025 Lục Văn Phương - AI Engineer.</p>
                 <div class="flex gap-4 mt-4 md:mt-0 font-mono">
-                    <span>Python</span> • <span>TensorFlow</span> • <span>Coffee</span>
+                    <i class="fas fa-brain text-aiPurple"></i> Built with Passion
                 </div>
             </div>
         </div>
@@ -521,15 +577,13 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Init Animation Library
         AOS.init({ once: true, offset: 50, duration: 800 });
 
-        // Mobile Menu Toggle
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
         btn.addEventListener('click', () => menu.classList.toggle('hidden'));
 
-        // Typewriter Effect
+        // Typewriter
         const textElement = document.getElementById('typewriter');
         const phrases = ["Neural Networks.", "Computer Vision.", "Future Tech."];
         let phraseIndex = 0;
@@ -558,12 +612,64 @@
         }
         document.addEventListener('DOMContentLoaded', type);
 
-        // --- NEURAL NETWORK PARTICLE ANIMATION (The "WOW" Factor) ---
+        // --- TERMINAL SIMULATION LOGIC ---
+        function runTerminalSimulation() {
+            const logsContainer = document.getElementById('training-logs');
+            const totalEpochs = 10;
+            let currentEpoch = 1;
+
+            function addLog(message, color = 'text-gray-300') {
+                const p = document.createElement('p');
+                p.className = `font-mono text-xs ${color} mb-1`;
+                p.innerText = message;
+                logsContainer.appendChild(p);
+                // Auto scroll to bottom
+                const terminalContent = document.getElementById('terminal-content');
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            }
+
+            function simulateEpoch() {
+                if (currentEpoch > totalEpochs) {
+                    addLog("Training Completed! Model Saved to ./checkpoints/best_model.h5", "text-aiCyan");
+                    return; 
+                }
+
+                const loss = (Math.random() * (0.5 - 0.01) + 0.01).toFixed(4);
+                const acc = (0.85 + (currentEpoch * 0.01)).toFixed(4);
+                
+                addLog(`Epoch ${currentEpoch}/${totalEpochs} [==============================] - loss: ${loss} - accuracy: ${acc}`);
+                
+                currentEpoch++;
+                setTimeout(simulateEpoch, 1500); // Speed of logs
+            }
+
+            setTimeout(simulateEpoch, 1000);
+        }
+        // Start simulation when user scrolls to it (Intersection Observer)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    runTerminalSimulation();
+                    observer.disconnect(); // Run once
+                }
+            });
+        });
+        observer.observe(document.getElementById('simulation'));
+
+
+        // --- NEURAL NETWORK PARTICLE ANIMATION ---
         const canvas = document.getElementById('neuro-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        const particleCount = 60; // Số lượng điểm
-        const connectionDistance = 150; // Khoảng cách kết nối
+        const particleCount = 60; 
+        const connectionDistance = 150; 
+        
+        // Mouse interaction
+        let mouse = { x: null, y: null };
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
 
         function resize() {
             canvas.width = window.innerWidth;
@@ -576,19 +682,30 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5; // Tốc độ di chuyển chậm
+                this.vx = (Math.random() - 0.5) * 0.5;
                 this.vy = (Math.random() - 0.5) * 0.5;
                 this.size = Math.random() * 2 + 1;
             }
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                // Bouncing off edges
                 if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
                 if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                // Mouse Repulsion effect
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+                if (distance < 100) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (100 - distance) / 100; 
+                    const repulsion = force * 2; // Strength
+                    this.x -= Math.cos(angle) * repulsion;
+                    this.y -= Math.sin(angle) * repulsion;
+                }
             }
             draw() {
-                ctx.fillStyle = 'rgba(0, 243, 255, 0.5)'; // Màu Cyan
+                ctx.fillStyle = 'rgba(0, 243, 255, 0.5)';
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -604,18 +721,13 @@
 
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Update and draw particles
             for (let i = 0; i < particles.length; i++) {
                 particles[i].update();
                 particles[i].draw();
-
-                // Draw connections
                 for (let j = i; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-
                     if (distance < connectionDistance) {
                         ctx.beginPath();
                         const opacity = 1 - (distance / connectionDistance);
